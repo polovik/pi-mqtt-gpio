@@ -1,0 +1,44 @@
+mqtt:
+  host: test.mosquitto.org
+  port: 1883
+  user: ""
+  password: ""
+  topic_prefix: peleron/garage
+
+stream_modules:
+  - name: systeminformation
+    module: systemstatus
+    monitor: memory_usage
+    cleanup: yes  # This optional boolean value sets whether the module's `cleanup()` function will be called when the software exits.
+
+stream_reads:
+  - name: serialrx
+    module: systeminformation
+    interval: 2 # Stream read polling interval in seconds
+
+stream_writes:
+  - name: serialtx
+    module: systeminformation
+
+logging:
+  version: 1
+  formatters:
+    simple:
+      format: "%(asctime)s %(name)s (%(levelname)s): %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+#    file:
+#      class: logging.FileHandler
+#      level: DEBUG
+#      formatter: simple
+#      filename: "debug.log"
+  loggers:
+    mqtt_gpio:
+      level: DEBUG
+      handlers: [console]
+#      handlers: [console, file]
+      propagate: yes

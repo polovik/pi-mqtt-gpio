@@ -11,7 +11,7 @@ from importlib import import_module
 from hashlib import sha1
 
 import threading  # For callback functions
-from fractions import gcd  # for calculating the callback periodic time
+from math import gcd  # for calculating the callback periodic time
 from functools import reduce
 
 import paho.mqtt.client as mqtt
