@@ -6,19 +6,64 @@ mqtt:
   topic_prefix: peleron/garage
 
 stream_modules:
-  - name: systeminformation
+  - name: systemmemory
     module: systemstatus
     monitor: memory_usage
-    cleanup: yes  # This optional boolean value sets whether the module's `cleanup()` function will be called when the software exits.
+    output_format: usage_percent
+#    cleanup: yes  # This optional boolean value sets whether the module's `cleanup()` function will be called when the software exits.
+
+  - name: systemcpu
+    module: systemstatus
+    monitor: cpu_usage
+    output_format: total_usage
+
+  - name: diskspace
+    module: systemstatus
+    monitor: disk_usage
+    output_format: percentage
+    partition_path: C
+
+  - name: diskio
+    module: systemstatus
+    monitor: disk_activity
+    output_format: total_bytes
+
+  - name: systemtemperature
+    module: systemstatus
+    monitor: temperature
+    output_format: celsius
+    device: coretemp
+    label: Physical id 0
+
+  - name: systemuptime
+    module: systemstatus
+    monitor: uptime
+    output_format: minutes
 
 stream_reads:
-  - name: serialrx
-    module: systeminformation
+  - name: memory
+    module: systemmemory
     interval: 2 # Stream read polling interval in seconds
 
-stream_writes:
-  - name: serialtx
-    module: systeminformation
+  - name: cpu
+    module: systemcpu
+    interval: 2 # Stream read polling interval in seconds
+
+  - name: filesystemspace
+    module: diskspace
+    interval: 2 # Stream read polling interval in seconds
+
+  - name: filesystemio
+    module: diskio
+    interval: 2 # Stream read polling interval in seconds
+
+  - name: cputemperature
+    module: systemtemperature
+    interval: 2 # Stream read polling interval in seconds
+
+  - name: timesinceboot
+    module: systemuptime
+    interval: 2 # Stream read polling interval in seconds
 
 logging:
   version: 1
